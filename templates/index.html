@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Performance Predictor</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #121212;
+      color: white;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-container {
+      background: rgba(45, 45, 45, 0.95);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+      text-align: center;
+      width: 500px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #00f2fe;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 1rem;
+      background-color: #333333;
+      color: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .clear-button {
+      background-color: #e74c3c;
+    }
+
+    .clear-button:hover {
+      background-color: #c0392b;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00f2fe;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Predict Student Performance</h2>
+    <form id="predictForm" action="/predict" method="POST">
+      <label>Hours Studied</label>
+      <input type="number" name="hours" step="any" min="0" required value="{{ request.form.hours or '' }}">
+
+      <label>Previous Scores (out of 100)</label>
+      <input type="number" name="scores" min="0" max="100" required value="{{ request.form.scores or '' }}">
+
+      <label>Extracurricular Activities</label>
+      <select name="activities" required>
+        <option value="">--Select--</option>
+        <option value="1" {% if request.form.activities == '1' %}selected{% endif %}>Yes</option>
+        <option value="0" {% if request.form.activities == '0' %}selected{% endif %}>No</option>
+      </select>
+
+      <label>Sleep Hours (per day)</label>
+      <input type="number" name="sleep" step="any" min="0" max="24" required value="{{ request.form.sleep or '' }}">
+
+      <label>Sample Papers Practiced</label>
+      <input type="number" name="papers" min="0" required value="{{ request.form.papers or '' }}">
+
+      <button type="submit">Predict</button>
+      <button type="button" class="clear-button" onclick="clearForm()">Clear</button>
+    </form>
+
+    {% if result is defined %}
+      <div id="result">
+        Performance Index: {{ result }} / 100
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    function clearForm() {
+      document.getElementById('predictForm').reset();
+    }
+  </script>
+</body>
+</html>
